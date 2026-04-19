@@ -10,12 +10,12 @@
 <style>
 body {
   margin:0;
-  font-family: 'Dancing Script', cursive;
+  font-family:'Dancing Script', cursive;
   background: linear-gradient(135deg, #ffd1dc, #ffe4ec);
   overflow:hidden;
 }
 
-/* GİRİŞ BLUR */
+/* GİRİŞ */
 #overlay {
   position:fixed;
   width:100%;
@@ -27,7 +27,6 @@ body {
   z-index:10;
 }
 
-/* BUTON */
 button {
   padding:20px 40px;
   font-size:24px;
@@ -36,13 +35,9 @@ button {
   background:#ff8fab;
   color:white;
   cursor:pointer;
-  transition:0.3s;
-}
-button:hover {
-  transform:scale(1.1);
 }
 
-/* ANA ALAN */
+/* ANA */
 .container {
   display:flex;
   height:100vh;
@@ -65,81 +60,102 @@ button:hover {
   transition: transform 1.2s cubic-bezier(.65,.05,.36,1);
 }
 
+.move { transform: translateX(-200px); }
+
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
 
-.move {
-  transform: translateX(-200px);
+/* TEK SATIR LYRICS */
+.lyric-box {
+  width:50%;
+  height:100px;
+  margin-left:60px;
+  position:relative;
+  overflow:hidden;
 }
 
-/* LYRICS */
-.lyrics {
-  width:40%;
-  margin-left:50px;
-  font-size:28px;
+.word {
+  position:absolute;
+  width:100%;
+  text-align:left;
+  font-size:34px;
+  color:#ff4d6d;
   opacity:0;
   transform: translateY(30px);
-  transition: all 1s ease;
+  transition: all 0.8s ease;
 }
 
-.show {
+.word.show {
   opacity:1;
   transform: translateY(0);
 }
 
-.line {
-  opacity:0.3;
-  transition:0.5s;
-}
-
-.active {
-  opacity:1;
-  font-size:34px;
-  color:#ff4d6d;
+.word.hide {
+  opacity:0;
+  transform: translateY(-20px);
 }
 </style>
 </head>
 
 <body>
 
-<!-- GİRİŞ -->
 <div id="overlay">
   <button onclick="start()">Bana tıkla güzelim 💖</button>
 </div>
 
 <div class="container">
   <div id="record" class="record">D ❤️ B</div>
-  <div id="lyrics" class="lyrics"></div>
+  <div class="lyric-box" id="lyricBox"></div>
 </div>
 
-<!-- AUDIO -->
 <audio id="audio">
-  <!-- BURAYI DEĞİŞTİREBİLİRSİN -->
   <source src="sarki.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-const lyricsData = [
-  { time: 5000, text: "🎵 (Giriş...)" },
+const audio = document.getElementById("audio");
+const box = document.getElementById("lyricBox");
+
+/*
+  BURASI ÖNEMLİ
+  time: ms
+  her biri sırayla gelir
+*/
+const lyricsFlow = [
   { time: 65000, text: "And I know..." },
-  { time: 70000, text: "You don't love me anymore..." },
-  { time: 90000, text: "This I love..." },
+  { time: 68000, text: "You don't love me..." },
+  { time: 71000, text: "No more..." },
+  { time: 75000, text: "This I love..." },
+  { time: 80000, text: "This I love..." }
 ];
 
-const lyricsContainer = document.getElementById("lyrics");
-const audio = document.getElementById("audio");
+let currentIndex = 0;
+let currentEl = null;
 
-/* LYRICS OLUŞTUR */
-lyricsData.forEach(line => {
-  const div = document.createElement("div");
-  div.className = "line";
-  div.innerText = line.text;
-  lyricsContainer.appendChild(div);
-});
+function showWord(text) {
+  const el = document.createElement("div");
+  el.className = "word";
+  el.innerText = text;
+  box.appendChild(el);
 
-/* BAŞLAT */
+  requestAnimationFrame(() => {
+    el.classList.add("show");
+  });
+
+  if (currentEl) {
+    currentEl.classList.remove("show");
+    currentEl.classList.add("hide");
+
+    setTimeout(() => {
+      if (currentEl) currentEl.remove();
+    }, 800);
+  }
+
+  currentEl = el;
+}
+
 function start() {
   document.getElementById("overlay").style.display = "none";
 
@@ -147,22 +163,18 @@ function start() {
   record.style.animationPlayState = "running";
   record.classList.add("move");
 
-  lyricsContainer.classList.add("show");
-
+  // 🔥 ŞARKIYI 1:05'TEN BAŞLAT
+  audio.currentTime = 65;
   audio.play();
 }
 
-/* SENKRON */
 audio.ontimeupdate = () => {
   const current = audio.currentTime * 1000;
-  const lines = document.querySelectorAll(".line");
 
-  lyricsData.forEach((line, index) => {
-    if (current >= line.time) {
-      lines.forEach(l => l.classList.remove("active"));
-      lines[index].classList.add("active");
-    }
-  });
+  if (currentIndex < lyricsFlow.length && current >= lyricsFlow[currentIndex].time) {
+    showWord(lyricsFlow[currentIndex].text);
+    currentIndex++;
+  }
 };
 </script>
 

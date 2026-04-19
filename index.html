@@ -15,7 +15,6 @@ body {
   overflow:hidden;
 }
 
-/* GİRİŞ */
 #overlay {
   position:fixed;
   width:100%;
@@ -35,16 +34,14 @@ button {
   background:#ff8fab;
   color:white;
   cursor:pointer;
-  transition:0.3s;
 }
-button:hover { transform:scale(1.1); }
 
-/* ANA */
 .container {
   display:flex;
   height:100vh;
   align-items:center;
   justify-content:center;
+  gap:60px;
 }
 
 /* PLAK */
@@ -58,11 +55,16 @@ button:hover { transform:scale(1.1); }
   justify-content:center;
   color:white;
   font-size:30px;
+
+  transform: translateX(0);
   animation: spin 4s linear infinite paused;
-  transition: transform 0.7s cubic-bezier(.65,.05,.36,1); /* 🔥 hızlandırıldı */
+
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.move { transform: translateX(-220px); }
+.record.move {
+  transform: translateX(-260px);
+}
 
 @keyframes spin {
   from { transform: rotate(0deg); }
@@ -72,11 +74,10 @@ button:hover { transform:scale(1.1); }
 /* LYRICS */
 .lyric-box {
   width:50%;
-  height:100px;
-  margin-left:60px;
+  height:120px;
   position:relative;
   overflow:hidden;
-  opacity:0; /* 🔥 başta gizli */
+  opacity:0;
   transition: opacity 0.8s ease;
 }
 
@@ -84,14 +85,16 @@ button:hover { transform:scale(1.1); }
   opacity:1;
 }
 
+/* TEK SATIR */
 .word {
   position:absolute;
   width:100%;
-  font-size:34px;
+  font-size:38px;
   color:#ff4d6d;
+
   opacity:0;
-  transform: translateY(30px);
-  transition: all 0.8s ease;
+  transform: translateY(25px);
+  transition: all 0.7s ease;
 }
 
 .word.show {
@@ -114,7 +117,7 @@ button:hover { transform:scale(1.1); }
 
 <div class="container">
   <div id="record" class="record">D ❤️ B</div>
-  <div class="lyric-box" id="lyricBox"></div>
+  <div class="lyric-box" id="box"></div>
 </div>
 
 <audio id="audio" preload="auto">
@@ -123,9 +126,8 @@ button:hover { transform:scale(1.1); }
 
 <script>
 const audio = document.getElementById("audio");
-const box = document.getElementById("lyricBox");
+const box = document.getElementById("box");
 
-/* SANİYE BAZLI */
 const lyricsFlow = [
   { time: 66, text: "And I know..." },
   { time: 69, text: "You don't love me..." },
@@ -134,9 +136,12 @@ const lyricsFlow = [
   { time: 75, text: "This I love..." }
 ];
 
-let currentIndex = 0;
-let currentEl = null;
+let i = 0;
 
+/* 🔥 ÖNEMLİ FIX: aynı anda 2 yazı kontrolü */
+let activeWords = [];
+
+/* YAZI GÖSTER */
 function showWord(text) {
   const el = document.createElement("div");
   el.className = "word";
@@ -147,34 +152,32 @@ function showWord(text) {
     el.classList.add("show");
   });
 
-  if (currentEl) {
-    currentEl.classList.remove("show");
-    currentEl.classList.add("hide");
+  activeWords.push(el);
+
+  // 🔥 eskiyi HEMEN silme → gecikmeli fade
+  if (activeWords.length > 1) {
+    const old = activeWords.shift();
+
+    old.classList.remove("show");
+    old.classList.add("hide");
 
     setTimeout(() => {
-      if (currentEl) currentEl.remove();
-    }, 800);
+      old.remove();
+    }, 900); // 👈 kritik fix: artık "flash" yok
   }
-
-  currentEl = el;
 }
 
-/* BAŞLAT */
+/* START */
 function start() {
   document.getElementById("overlay").style.display = "none";
 
   const record = document.getElementById("record");
-  record.style.animationPlayState = "running";
-
-  // 🔥 önce plak kayıyor
   record.classList.add("move");
 
-  // 🔥 lyrics gecikmeli geliyor
   setTimeout(() => {
     box.classList.add("show");
-  }, 600); // plak kaydıktan sonra
+  }, 600);
 
-  // 🔥 ses başlatma
   audio.pause();
   audio.currentTime = 65;
 
@@ -183,13 +186,13 @@ function start() {
   }, { once: true });
 }
 
-/* SENKRON */
+/* SYNC */
 audio.ontimeupdate = () => {
-  const current = audio.currentTime;
+  const t = audio.currentTime;
 
-  if (currentIndex < lyricsFlow.length && current >= lyricsFlow[currentIndex].time) {
-    showWord(lyricsFlow[currentIndex].text);
-    currentIndex++;
+  if (i < lyricsFlow.length && t >= lyricsFlow[i].time) {
+    showWord(lyricsFlow[i].text);
+    i++;
   }
 };
 </script>

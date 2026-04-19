@@ -35,7 +35,9 @@ button {
   background:#ff8fab;
   color:white;
   cursor:pointer;
+  transition:0.3s;
 }
+button:hover { transform:scale(1.1); }
 
 /* ANA */
 .container {
@@ -67,7 +69,7 @@ button {
   to { transform: rotate(360deg); }
 }
 
-/* TEK SATIR LYRICS */
+/* LYRICS */
 .lyric-box {
   width:50%;
   height:100px;
@@ -79,7 +81,6 @@ button {
 .word {
   position:absolute;
   width:100%;
-  text-align:left;
   font-size:34px;
   color:#ff4d6d;
   opacity:0;
@@ -110,7 +111,7 @@ button {
   <div class="lyric-box" id="lyricBox"></div>
 </div>
 
-<audio id="audio">
+<audio id="audio" preload="auto">
   <source src="sarki.mp3" type="audio/mpeg">
 </audio>
 
@@ -118,11 +119,7 @@ button {
 const audio = document.getElementById("audio");
 const box = document.getElementById("lyricBox");
 
-/*
-  BURASI ÖNEMLİ
-  time: ms
-  her biri sırayla gelir
-*/
+/* LYRICS AKIŞ */
 const lyricsFlow = [
   { time: 65000, text: "And I know..." },
   { time: 68000, text: "You don't love me..." },
@@ -134,6 +131,7 @@ const lyricsFlow = [
 let currentIndex = 0;
 let currentEl = null;
 
+/* KELİME GÖSTER */
 function showWord(text) {
   const el = document.createElement("div");
   el.className = "word";
@@ -156,6 +154,7 @@ function showWord(text) {
   currentEl = el;
 }
 
+/* BAŞLAT */
 function start() {
   document.getElementById("overlay").style.display = "none";
 
@@ -163,11 +162,16 @@ function start() {
   record.style.animationPlayState = "running";
   record.classList.add("move");
 
-  // 🔥 ŞARKIYI 1:05'TEN BAŞLAT
+  // 🔥 PROFESYONEL SEEK FIX
+  audio.pause();
   audio.currentTime = 65;
-  audio.play();
+
+  audio.addEventListener("seeked", () => {
+    audio.play();
+  }, { once: true });
 }
 
+/* SENKRON */
 audio.ontimeupdate = () => {
   const current = audio.currentTime * 1000;
 

@@ -7,156 +7,103 @@
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --pink-bg: #ffe5ec; /* Açık Pembe Arka Plan */
-            --main-pink: #ffafcc; /* Ana Pembe Tonu */
-            --dark-pink: #ff2d55; /* Vurgu Pembesi (Kalp ve Buton) */
-            --text-color: #4a4a4a; /* Koyu Gri Metin (Okunurluk İçin) */
+            --pink-bg: #ffe5ec;
+            --main-pink: #ffafcc;
+            --dark-pink: #ff2d55;
+            --text-color: #4a4a4a;
         }
 
         body, html {
-            margin: 0; padding: 0;
-            width: 100%; height: 100%;
-            background-color: var(--pink-bg); /* YENİ: Siyah yerine Pembe Tema */
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: var(--pink-bg);
             font-family: 'Poppins', sans-serif;
-            overflow: hidden;
-            display: flex; justify-content: center; align-items: center;
+            overflow: hidden; display: flex; justify-content: center; align-items: center;
         }
 
-        /* --- Giriş Ekranı (Blur Efekti) --- */
+        /* Giriş Blur Ekranı */
         #overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 229, 236, 0.85); /* Pembe Tonlu Blur */
-            backdrop-filter: blur(25px);
-            z-index: 100;
+            background: rgba(255, 229, 236, 0.9);
+            backdrop-filter: blur(25px); z-index: 100;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: opacity 1.5s ease, visibility 1.5s;
+            transition: all 1s ease;
         }
 
-        .intro-text {
-            color: var(--text-color);
-            font-family: 'Dancing Script', cursive;
-            font-size: 2.5rem; margin-bottom: 25px;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
+        .intro-text { color: var(--text-color); font-family: 'Dancing Script', cursive; font-size: 2.2rem; margin-bottom: 20px; }
+        
         .start-btn {
-            background: var(--main-pink); border: none;
-            padding: 18px 40px; border-radius: 50px;
-            color: white; font-weight: 600; font-size: 1.1rem;
-            cursor: pointer;
-            box-shadow: 0 5px 20px rgba(255, 175, 204, 0.6);
-            transition: all 0.3s ease;
-        }
-        .start-btn:hover {
-            transform: scale(1.1) translateY(-3px);
-            background: var(--dark-pink);
-            box-shadow: 0 8px 25px rgba(255, 45, 85, 0.5);
+            background: var(--main-pink); border: none; padding: 15px 35px; border-radius: 50px;
+            color: white; font-weight: 600; cursor: pointer; box-shadow: 0 5px 15px rgba(255,175,204,0.4);
         }
 
-        /* --- Ana İçerik --- */
+        /* Ana Sahne */
         #main-content {
-            width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center;
-            opacity: 0; transition: opacity 2s ease;
-            position: relative;
+            width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 1s ease; position: relative;
         }
 
-        /* --- Plak Tasarımı ve Hareketi --- */
+        /* Plak */
         .vinyl-wrapper {
-            position: absolute; /* Kaydırma için mutlak konum */
-            display: flex; justify-content: center; align-items: center;
-            transition: transform 1.5s cubic-bezier(0.25, 1, 0.5, 1); /* YENİ: Akıcı Sola Kayma */
-            z-index: 10;
+            position: relative; transition: transform 1.5s ease-in-out; z-index: 10;
         }
 
         .vinyl-container {
-            width: 320px; height: 320px;
-            background: #111; border-radius: 50%;
-            position: relative;
-            box-shadow: 0 0 60px rgba(0,0,0,0.5), 0 0 20px rgba(255, 45, 85, 0.3);
-            border: 12px solid #000;
-            display: flex; justify-content: center; align-items: center;
+            width: 280px; height: 280px; background: #111; border-radius: 50%;
+            border: 10px solid #000; display: flex; justify-content: center; align-items: center;
+            position: relative; box-shadow: 0 0 30px rgba(0,0,0,0.3);
         }
 
         .vinyl-rings {
-            position: absolute; width: 100%; height: 100%;
-            border-radius: 50%;
-            background: repeating-radial-gradient(circle, #222, #000 3px, #222 6px);
-            opacity: 0.6;
+            position: absolute; width: 100%; height: 100%; border-radius: 50%;
+            background: repeating-radial-gradient(circle, #222, #000 3px, #222 6px); opacity: 0.5;
         }
 
         .vinyl-label {
-            width: 110px; height: 110px;
-            background: white; border-radius: 50%;
-            z-index: 5; display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            font-family: 'Dancing Script', cursive;
-            line-height: 1.2; font-size: 1.4rem;
-            color: #333; text-align: center;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+            width: 100px; height: 100px; background: white; border-radius: 50%;
+            z-index: 5; display: flex; flex-direction: column; justify-content: center;
+            align-items: center; font-family: 'Dancing Script', cursive; text-align: center;
         }
 
-        .vinyl-label span {
-            color: var(--dark-pink); /* YENİ: Kalp Pembe Kalacak */
-            font-size: 1.8rem;
-            animation: pulseHeart 1.5s infinite;
+        .vinyl-label span { color: var(--dark-pink); font-size: 1.5rem; }
+
+        /* Lyrics (Ortada) */
+        #lyrics-container {
+            position: absolute; left: 50%; transform: translateX(-50%);
+            color: var(--dark-pink); font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem; text-align: center; width: 80%;
+            opacity: 0; transition: opacity 0.5s; z-index: 5;
         }
 
         /* Animasyonlar */
-        .rotating { animation: rotateVinyl 3s linear infinite; } /* Plak Dönme Hızı */
+        .rotating { animation: rotateVinyl 3s linear infinite; }
         @keyframes rotateVinyl { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes pulseHeart { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
-
-        /* YENİ: Sola Kayma Sınıfı */
-        .move-left { transform: translateX(-35%); } /* Plak ekranın soluna kayar */
-
-        /* --- YENİ: Lyrics (Ortada Çıkacak Sözler) --- */
-        #lyrics-container {
-            position: absolute;
-            left: 50%; /* Plak sola kayarken kelimeler tam ortada kalır */
-            transform: translateX(-15%); /* Kelimeleri ortalar */
-            color: var(--dark-pink);
-            font-family: 'Dancing Script', cursive;
-            font-size: 2rem;
-            text-align: center;
-            max-width: 45%;
-            text-shadow: 0 2px 10px rgba(255, 45, 85, 0.3);
-            font-style: italic;
-            opacity: 0;
-            transition: opacity 1s ease;
-            z-index: 5;
-        }
-        #lyrics-container.show { opacity: 1; } /* Sözler belirdiğinde */
-
+        .move-left { transform: translateX(-25%); } /* Plak sola kayar */
+        .show-lyrics { opacity: 1 !important; transform: translateX(20%) !important; }
     </style>
 </head>
 <body>
 
     <div id="overlay">
         <div class="intro-text">Hadi tıkla sevgilim...</div>
-        <button class="start-btn" onclick="startApp()">Bana tıkla güzelim</button>
+        <button class="start-btn" onclick="herSeyiBaslat()">Bana tıkla güzelim</button>
     </div>
 
     <div id="main-content">
         <div class="vinyl-wrapper" id="vinylWrapper">
-            <div class="vinyl-container rotating">
+            <div class="vinyl-container" id="vinyl">
                 <div class="vinyl-rings"></div>
-                <div class="vinyl-label">
-                    D<br><span>❤</span><br>B
-                </div>
+                <div class="vinyl-label">D<br><span>❤</span><br>B</div>
             </div>
         </div>
-
         <div id="lyrics-container"></div>
     </div>
 
-    <audio id="myAudio" preload="auto">
+    <audio id="myAudio">
         <source src="sarki.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        // Şarkının 1:05 (65. saniye) ve sonrası için lirikler
-        const lyrics = [
+        const lyricsData = [
             { time: 0, text: "" },
             { time: 1, text: "So if she's somewhere near me" },
             { time: 4, text: "I hope to God she hears me" },
@@ -170,50 +117,40 @@
             { time: 29, text: "Within' her eyes" }
         ];
 
-        function startApp() {
+        function herSeyiBaslat() {
+            const audio = document.getElementById('myAudio');
             const overlay = document.getElementById('overlay');
             const mainContent = document.getElementById('main-content');
-            const audio = document.getElementById('myAudio');
+            const vinyl = document.getElementById('vinyl');
             const vinylWrapper = document.getElementById('vinylWrapper');
+            const lyricsDiv = document.getElementById('lyrics-container');
 
-            // 1. Blur'ı kaldır
+            // 1. Ekranı Aç
             overlay.style.opacity = '0';
             setTimeout(() => {
                 overlay.style.visibility = 'hidden';
                 mainContent.style.opacity = '1';
                 
-                // 2. Müzik 1:05'ten başlar
-                audio.currentTime = 65; 
-                audio.play();
-
-                // 3. YENİ: Plak sola kayar ve kelimeler başlar
+                // 2. Şarkıyı ve Animasyonu Başlat
+                audio.currentTime = 65; // 1:05'ten başlar
+                
+                // Şarkı çalmazsa hata vermesin diye kontrol
+                audio.play().catch(e => console.log("Hata: Şarkı dosyası bulunamadı veya isim yanlış."));
+                
+                vinyl.classList.add('rotating');
                 vinylWrapper.classList.add('move-left');
-                displayLyrics();
-            }, 1000); // 1 saniye sonra başlar
-        }
-
-        function displayLyrics() {
-            const audio = document.getElementById('myAudio');
-            const lyricsDiv = document.getElementById('lyrics-container');
-
-            audio.addEventListener('timeupdate', () => {
-                const relativeTime = audio.currentTime - 65; // 1:05'ten sonrasını takip et
-                const currentLine = lyrics.find((line, index) => {
-                    const nextLine = lyrics[index + 1];
-                    return relativeTime >= line.time && (!nextLine || relativeTime < nextLine.time);
+                lyricsDiv.classList.add('show-lyrics');
+                
+                // 3. Sözleri Başlat
+                audio.addEventListener('timeupdate', () => {
+                    const relativeTime = audio.currentTime - 65;
+                    const line = lyricsData.find((l, index) => {
+                        const next = lyricsData[index + 1];
+                        return relativeTime >= l.time && (!next || relativeTime < next.time);
+                    });
+                    if (line) lyricsDiv.innerText = line.text;
                 });
-
-                if (currentLine) {
-                    // Kelimeleri göster (akıcı geçiş için)
-                    if (lyricsDiv.innerText !== currentLine.text) {
-                        lyricsDiv.classList.remove('show');
-                        setTimeout(() => {
-                            lyricsDiv.innerText = currentLine.text;
-                            lyricsDiv.classList.add('show');
-                        }, 300); // Hafif bir bekleme ile sözü değiştir
-                    }
-                }
-            });
+            }, 500);
         }
     </script>
 </body>

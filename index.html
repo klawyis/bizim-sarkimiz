@@ -59,10 +59,10 @@ button:hover { transform:scale(1.1); }
   color:white;
   font-size:30px;
   animation: spin 4s linear infinite paused;
-  transition: transform 1.2s cubic-bezier(.65,.05,.36,1);
+  transition: transform 0.7s cubic-bezier(.65,.05,.36,1); /* 🔥 hızlandırıldı */
 }
 
-.move { transform: translateX(-200px); }
+.move { transform: translateX(-220px); }
 
 @keyframes spin {
   from { transform: rotate(0deg); }
@@ -76,6 +76,12 @@ button:hover { transform:scale(1.1); }
   margin-left:60px;
   position:relative;
   overflow:hidden;
+  opacity:0; /* 🔥 başta gizli */
+  transition: opacity 0.8s ease;
+}
+
+.lyric-box.show {
+  opacity:1;
 }
 
 .word {
@@ -119,7 +125,7 @@ button:hover { transform:scale(1.1); }
 const audio = document.getElementById("audio");
 const box = document.getElementById("lyricBox");
 
-/* 🔥 ARTIK SANİYE BAZLI */
+/* SANİYE BAZLI */
 const lyricsFlow = [
   { time: 65, text: "And I know..." },
   { time: 68, text: "You don't love me..." },
@@ -131,7 +137,6 @@ const lyricsFlow = [
 let currentIndex = 0;
 let currentEl = null;
 
-/* KELİME GÖSTER */
 function showWord(text) {
   const el = document.createElement("div");
   el.className = "word";
@@ -160,9 +165,16 @@ function start() {
 
   const record = document.getElementById("record");
   record.style.animationPlayState = "running";
+
+  // 🔥 önce plak kayıyor
   record.classList.add("move");
 
-  // 🔥 1:05'ten başlat
+  // 🔥 lyrics gecikmeli geliyor
+  setTimeout(() => {
+    box.classList.add("show");
+  }, 600); // plak kaydıktan sonra
+
+  // 🔥 ses başlatma
   audio.pause();
   audio.currentTime = 65;
 
@@ -171,9 +183,9 @@ function start() {
   }, { once: true });
 }
 
-/* SENKRON (SANİYE) */
+/* SENKRON */
 audio.ontimeupdate = () => {
-  const current = audio.currentTime; // ❗ artık saniye
+  const current = audio.currentTime;
 
   if (currentIndex < lyricsFlow.length && current >= lyricsFlow[currentIndex].time) {
     showWord(lyricsFlow[currentIndex].text);

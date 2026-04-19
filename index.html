@@ -119,13 +119,13 @@ button:hover { transform:scale(1.1); }
 const audio = document.getElementById("audio");
 const box = document.getElementById("lyricBox");
 
-/* LYRICS AKIŞ */
+/* 🔥 ARTIK SANİYE BAZLI */
 const lyricsFlow = [
-  { time: 65000, text: "And I know..." },
-  { time: 68000, text: "You don't love me..." },
-  { time: 71000, text: "No more..." },
-  { time: 75000, text: "This I love..." },
-  { time: 80000, text: "This I love..." }
+  { time: 65, text: "And I know..." },
+  { time: 68, text: "You don't love me..." },
+  { time: 71, text: "No more..." },
+  { time: 75, text: "This I love..." },
+  { time: 80, text: "This I love..." }
 ];
 
 let currentIndex = 0;
@@ -162,7 +162,7 @@ function start() {
   record.style.animationPlayState = "running";
   record.classList.add("move");
 
-  // 🔥 PROFESYONEL SEEK FIX
+  // 🔥 1:05'ten başlat
   audio.pause();
   audio.currentTime = 65;
 
@@ -171,9 +171,9 @@ function start() {
   }, { once: true });
 }
 
-/* SENKRON */
+/* SENKRON (SANİYE) */
 audio.ontimeupdate = () => {
-  const current = audio.currentTime * 1000;
+  const current = audio.currentTime; // ❗ artık saniye
 
   if (currentIndex < lyricsFlow.length && current >= lyricsFlow[currentIndex].time) {
     showWord(lyricsFlow[currentIndex].text);

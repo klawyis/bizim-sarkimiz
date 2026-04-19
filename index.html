@@ -1,87 +1,170 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sadece Senin İçin... 💖</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
-    <style>
-        :root { --pink-bg: #ffe5ec; --main-pink: #ffafcc; --dark-pink: #ff2d55; --text-color: #4a4a4a; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: var(--pink-bg); font-family: 'Poppins', sans-serif; overflow: hidden; display: flex; justify-content: center; align-items: center; }
-        #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--pink-bg); z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: 0.8s; }
-        .intro-text { color: var(--text-color); font-family: 'Dancing Script', cursive; font-size: 2rem; margin-bottom: 20px; text-align: center; }
-        .start-btn { background: var(--main-pink); border: none; padding: 15px 40px; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.1); font-size: 1.1rem; }
-        #main-content { display: none; width: 100%; height: 100%; position: relative; justify-content: center; align-items: center; }
-        .vinyl-wrapper { position: relative; transition: transform 2s ease-in-out; z-index: 10; }
-        .vinyl-container { width: 260px; height: 260px; background: #000; border-radius: 50%; border: 8px solid #222; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 40px rgba(0,0,0,0.4); }
-        .vinyl-label { width: 90px; height: 90px; background: white; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; font-family: 'Dancing Script', cursive; text-align: center; font-size: 1.2rem; }
-        .vinyl-label span { color: var(--dark-pink); font-size: 1.4rem; }
-        #lyrics-container { position: absolute; color: var(--dark-pink); font-family: 'Dancing Script', cursive; font-size: 2.2rem; text-align: center; width: 300px; opacity: 0; transition: 1s; right: 10%; }
-        .rotating { animation: rotateVinyl 3s linear infinite; }
-        @keyframes rotateVinyl { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .move-left { transform: translateX(-150px); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Damla ❤️</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin:0;
+  font-family: 'Dancing Script', cursive;
+  background: linear-gradient(135deg, #ffd1dc, #ffe4ec);
+  overflow:hidden;
+}
+
+/* GİRİŞ BLUR */
+#overlay {
+  position:fixed;
+  width:100%;
+  height:100%;
+  backdrop-filter: blur(20px);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:10;
+}
+
+/* BUTON */
+button {
+  padding:20px 40px;
+  font-size:24px;
+  border:none;
+  border-radius:30px;
+  background:#ff8fab;
+  color:white;
+  cursor:pointer;
+  transition:0.3s;
+}
+button:hover {
+  transform:scale(1.1);
+}
+
+/* ANA ALAN */
+.container {
+  display:flex;
+  height:100vh;
+  align-items:center;
+  justify-content:center;
+}
+
+/* PLAK */
+.record {
+  width:300px;
+  height:300px;
+  border-radius:50%;
+  background: radial-gradient(circle, #222 40%, #000 60%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  font-size:30px;
+  animation: spin 4s linear infinite paused;
+  transition: transform 1.2s cubic-bezier(.65,.05,.36,1);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.move {
+  transform: translateX(-200px);
+}
+
+/* LYRICS */
+.lyrics {
+  width:40%;
+  margin-left:50px;
+  font-size:28px;
+  opacity:0;
+  transform: translateY(30px);
+  transition: all 1s ease;
+}
+
+.show {
+  opacity:1;
+  transform: translateY(0);
+}
+
+.line {
+  opacity:0.3;
+  transition:0.5s;
+}
+
+.active {
+  opacity:1;
+  font-size:34px;
+  color:#ff4d6d;
+}
+</style>
 </head>
+
 <body>
-    <div id="overlay">
-        <div class="intro-text">Hadi tıkla sevgilim...</div>
-        <button class="start-btn" onclick="calistir()">Bana tıkla güzelim</button>
-    </div>
-    <div id="main-content">
-        <div class="vinyl-wrapper" id="vinylWrapper">
-            <div class="vinyl-container" id="vinyl">
-                <div class="vinyl-label">D<br><span>❤</span><br>B</div>
-            </div>
-        </div>
-        <div id="lyrics-container"></div>
-    </div>
 
-    <audio id="audio" crossOrigin="anonymous">
-        <source src="https://www.mboxdrive.com/ThisILove_Cut.mp3" type="audio/mpeg">
-    </audio>
+<!-- GİRİŞ -->
+<div id="overlay">
+  <button onclick="start()">Bana tıkla güzelim 💖</button>
+</div>
 
-    <script>
-        const lyricsData = [
-            { t: 1, text: "So if she's somewhere near me" },
-            { t: 4, text: "I hope to God she hears me" },
-            { t: 7, text: "There's no one else" },
-            { t: 9, text: "Could ever make me feel" },
-            { t: 12, text: "I'm so alive" },
-            { t: 15, text: "I hoped she'd never leave me" },
-            { t: 18, text: "Please God you must believe me" },
-            { t: 22, text: "I've searched the universe" },
-            { t: 26, text: "And found myself" },
-            { t: 29, text: "Within' her eyes" }
-        ];
+<div class="container">
+  <div id="record" class="record">D ❤️ B</div>
+  <div id="lyrics" class="lyrics"></div>
+</div>
 
-        function calistir() {
-            const audio = document.getElementById('audio');
-            const overlay = document.getElementById('overlay');
-            const mainContent = document.getElementById('main-content');
-            const vinyl = document.getElementById('vinyl');
-            const vinylWrapper = document.getElementById('vinylWrapper');
-            const lyricsDiv = document.getElementById('lyrics-container');
+<!-- AUDIO -->
+<audio id="audio">
+  <!-- BURAYI DEĞİŞTİREBİLİRSİN -->
+  <source src="sarki.mp3" type="audio/mpeg">
+</audio>
 
-            overlay.style.opacity = '0';
-            setTimeout(() => {
-                overlay.style.display = 'none';
-                mainContent.style.display = 'flex';
-                
-                audio.play(); // Şarkı direkt internetten başlar
-                
-                vinyl.classList.add('rotating');
-                setTimeout(() => {
-                    vinylWrapper.classList.add('move-left');
-                    lyricsDiv.style.opacity = '1';
-                }, 500);
+<script>
+const lyricsData = [
+  { time: 5000, text: "🎵 (Giriş...)" },
+  { time: 65000, text: "And I know..." },
+  { time: 70000, text: "You don't love me anymore..." },
+  { time: 90000, text: "This I love..." },
+];
 
-                audio.addEventListener('timeupdate', () => {
-                    let cur = audio.currentTime; 
-                    let line = lyricsData.find((l, i) => cur >= l.t && (!lyricsData[i+1] || cur < lyricsData[i+1].t));
-                    if (line) lyricsDiv.innerText = line.text;
-                });
-            }, 800);
-        }
-    </script>
+const lyricsContainer = document.getElementById("lyrics");
+const audio = document.getElementById("audio");
+
+/* LYRICS OLUŞTUR */
+lyricsData.forEach(line => {
+  const div = document.createElement("div");
+  div.className = "line";
+  div.innerText = line.text;
+  lyricsContainer.appendChild(div);
+});
+
+/* BAŞLAT */
+function start() {
+  document.getElementById("overlay").style.display = "none";
+
+  const record = document.getElementById("record");
+  record.style.animationPlayState = "running";
+  record.classList.add("move");
+
+  lyricsContainer.classList.add("show");
+
+  audio.play();
+}
+
+/* SENKRON */
+audio.ontimeupdate = () => {
+  const current = audio.currentTime * 1000;
+  const lines = document.querySelectorAll(".line");
+
+  lyricsData.forEach((line, index) => {
+    if (current >= line.time) {
+      lines.forEach(l => l.classList.remove("active"));
+      lines[index].classList.add("active");
+    }
+  });
+};
+</script>
+
 </body>
 </html>
